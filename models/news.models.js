@@ -31,3 +31,9 @@ exports.findingArticleId = (articleId) => {
         });
 }
 
+exports.findingUsers = () => {
+    return db.query(`SELECT * FROM users`).then((result) => {
+        return result.rows
+    })
+}
+

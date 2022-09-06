@@ -12,8 +12,9 @@ afterAll(() => {
     return db.end();
 });
 
-describe("GET", () => {
-    it("Should return an array of topic objects, each of which should have the following properties", () => {
+describe("GET /api/topics", () => {
+
+    it("Should return an array of users objects", () => {
 
         return request(app)
             .get("/api/topics")
@@ -38,6 +39,7 @@ describe("GET", () => {
     });
 
     describe("GET /api/articles/:article_id", () => {
+
         it("Should return an array of articles objects", () => {
             return request(app)
                 .get(`/api/articles/2`)
@@ -65,4 +67,31 @@ describe("GET", () => {
             });
     });
 })
+
+describe("GET /api/users", () => {
+
+    it("Should return an array of topic objects, each of which should have the following properties", () => {
+
+        return request(app)
+            .get("/api/users")
+            .expect(200)
+            .then((response) => {
+                response.body.users.forEach((user) => {
+
+                    expect(user).toHaveProperty("username", expect.any(String));
+                    expect(user).toHaveProperty("name", expect.any(String));
+                    expect(user).toHaveProperty("avatar_url", expect.any(String));
+                });
+            });
+    });
+
+    it("Should return the intended error message", () => {
+        return request(app)
+            .get("/api/mango")
+            .expect(404)
+            .then(({ body }) => {
+                expect(body.msg).toBe("Page not found");
+            });
+        });
+    })
 

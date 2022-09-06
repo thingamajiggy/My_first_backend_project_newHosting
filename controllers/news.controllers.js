@@ -18,7 +18,15 @@ exports.getArticleId = (req, res, next) => {
         .catch((err) => {
             next(err);
         });
+}
 
+exports.getUsers = (req, res, next) => {
+    findingUsers().then((arrayOfUsers) => {
+        res.status(200).send({ users: arrayOfUsers })
+    })
+        .catch((err) => {
+            next(err);
+        });
 }
 
 exports.code404NotFound = (req, res) => {
