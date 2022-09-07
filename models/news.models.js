@@ -32,8 +32,19 @@ exports.findingArticleId = (articleId) => {
 }
 
 exports.findingUsers = () => {
-    return db.query(`SELECT * FROM users`).then((result) => {
-        return result.rows
-    })
+    return db.query(`SELECT * FROM users`)
+        .then((result) => {
+            return result.rows
+        })
 }
 
+exports.patchingArticleId = (articleId, voteCount) => {
+    const { inc_votes } = voteCount;
+    
+    return db.query(
+        `UPDATE articles SET votes = votes + $1 WHERE article_id = $2 RETURNING *;`, [inc_votes, articleId]
+    )
+        .then((result) => {
+            return result.rows[0];
+        })
+}
