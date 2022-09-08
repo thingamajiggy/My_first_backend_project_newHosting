@@ -1,5 +1,3 @@
-\c nc_news_test
+\c nc_news
 
-SELECT * FROM topics;
-SELECT topics.slug, topics.description FROM topics;
-SELECT * FROM comments;
+UPDATE articles SET votes = $1 WHERE votes = $2 RETURNING *;

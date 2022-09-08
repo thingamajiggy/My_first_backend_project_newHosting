@@ -1,4 +1,4 @@
-const { findingTopics, findingArticleId, findingUsers } = require('../models/news.models.js')
+const { findingTopics, findingArticleId, findingUsers, patchingArticleId } = require('../models/news.models.js')
 
 exports.getTopics = (req, res, next) => {
     findingTopics().then((arrayOfTopics) => {
@@ -18,7 +18,26 @@ exports.getArticleId = (req, res, next) => {
         .catch((err) => {
             next(err);
         });
+}
 
+exports.getUsers = (req, res, next) => {
+    findingUsers().then((arrayOfUsers) => {
+        res.status(200).send({ users: arrayOfUsers })
+    })
+        .catch((err) => {
+            next(err);
+        });
+}
+
+exports.patchArticleId = (req, res, next) => {
+    patchingArticleId(req.params.article_id, req.body)
+
+        .then((updatedArticleId) => {
+            res.status(201).send({ updatedArticleId });
+        })
+        .catch((err) => {
+            next(err);
+        });
 }
 
 exports.code404NotFound = (req, res) => {

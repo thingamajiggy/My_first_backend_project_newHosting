@@ -1,11 +1,13 @@
 const express = require('express');
-const { getTopics, getArticleId, getUsers, code404NotFound } = require('./controllers/news.controllers.js')
+const { getTopics, getArticleId, getUsers, patchArticleId, code404NotFound } = require('./controllers/news.controllers.js')
 const app = express();
 
 app.use(express.json());
 
 app.get("/api/topics", getTopics);
 app.get("/api/articles/:article_id", getArticleId);
+app.get("/api/users", getUsers);
+app.patch("/api/articles/:article_id", patchArticleId);
 
 app.use("*", code404NotFound);
 
