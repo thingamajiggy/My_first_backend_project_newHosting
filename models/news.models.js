@@ -7,6 +7,19 @@ exports.findingTopics = () => {
         })
 }
 
+exports.findingArticles = (topicFilter) => {
+    const queryArguments = []
+
+    if (topicFilter) {
+        queryArguments.push(topicFilter)
+    }
+
+    return db.query(`SELECT * FROM articles ${topicFilter ? 'WHERE topic = $1' : ''} ORDER BY created_at DESC;`, queryArguments)
+        .then((result) => {
+            return result.rows;
+        })
+}
+
 exports.findingArticleId = (articleId) => {
     return db.query(`
         SELECT
@@ -16,7 +29,10 @@ exports.findingArticleId = (articleId) => {
             body,
             topic,
             created_at,
-            votes
+            votes,
+            (
+                SELECT COUNT(comment_id) FROM comments WHERE article_id = $1
+            ) AS comment_count
         FROM articles
         WHERE article_id = $1;`, [articleId])
         .then(({ rows }) => {
@@ -31,16 +47,9 @@ exports.findingArticleId = (articleId) => {
         });
 }
 
-exports.findingUsers = () => {
-    return db.query(`SELECT * FROM users`)
-        .then((result) => {
-            return result.rows
-        })
-}
-
 exports.patchingArticleId = (articleId, voteCount) => {
     const { inc_votes } = voteCount;
-    
+
     return db.query(
         `UPDATE articles SET votes = votes + $1 WHERE article_id = $2 RETURNING *;`, [inc_votes, articleId]
     )
@@ -48,3 +57,21 @@ exports.patchingArticleId = (articleId, voteCount) => {
             return result.rows[0];
         })
 }
+
+exports.findingComments = (articleId) => {
+
+    return db.query(`SELECT * FROM comments WHERE article_id = $1;`, [articleId])
+        .then((result) => {
+            return result.rows;
+        })
+}
+
+exports.findingUsers = () => {
+    return db.query(`SELECT * FROM users;`)
+        .then((result) => {
+            return result.rows
+        })
+}
+
+
+

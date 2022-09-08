@@ -40,7 +40,7 @@ describe("GET /api/topics", () => {
 
     describe("GET /api/articles/:article_id", () => {
 
-        it("Should return an array of articles objects", () => {
+        it.skip("Should return an array of articles objects", () => {
             return request(app)
                 .get(`/api/articles/2`)
                 .expect(200)
@@ -92,6 +92,6 @@ describe("GET /api/users", () => {
             .then(({ body }) => {
                 expect(body.msg).toBe("Page not found");
             });
-        });
-    })
+    });
+})
 
