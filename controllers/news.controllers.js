@@ -1,8 +1,28 @@
-const { findingTopics, findingArticleId, findingUsers, patchingArticleId } = require('../models/news.models.js')
+const { findingTopics, findingArticleId, findingUsers, patchingArticleId, findingArticles, findingComments } = require('../models/news.models.js')
 
 exports.getTopics = (req, res, next) => {
     findingTopics().then((arrayOfTopics) => {
         res.status(200).send({ topics: arrayOfTopics })
+    })
+    .catch((err) => {
+        next(err);
+    });
+}
+
+exports.getUsers = (req, res, next) => {
+    findingUsers().then((arrayOfUsers) => {
+        res.status(200).send({ arrayOfusers })
+    })
+    .catch((err) => {
+        next(err);
+    })
+}
+
+exports.getArticles = (req, res, next) => {
+    const { topic } = req.query;
+
+    findingArticles(topic).then((result) => {
+        res.status(200).send({ result })
     })
         .catch((err) => {
             next(err);
@@ -20,21 +40,30 @@ exports.getArticleId = (req, res, next) => {
         });
 }
 
-exports.getUsers = (req, res, next) => {
-    findingUsers().then((arrayOfUsers) => {
-        res.status(200).send({ users: arrayOfUsers })
-    })
+exports.patchArticleId = (req, res, next) => {
+    patchingArticleId(req.params.article_id, req.body)
+        .then((updatedArticle) => {
+            res.status(201).send({ updatedArticle });
+        })
         .catch((err) => {
             next(err);
         });
 }
 
-exports.patchArticleId = (req, res, next) => {
-    patchingArticleId(req.params.article_id, req.body)
-
-        .then((updatedArticleId) => {
-            res.status(201).send({ updatedArticleId });
+exports.getComments = (req, res, next) => {
+    findingComments(req.params.article_id)
+        .then((selectedComments) => {
+            res.status(200).send({ selectedComments })
         })
+        .catch((err) => {
+            next(err);
+        });
+}
+
+exports.getUsers = (req, res, next) => {
+    findingUsers().then((arrayOfUsers) => {
+        res.status(200).send({ users: arrayOfUsers })
+    })
         .catch((err) => {
             next(err);
         });
