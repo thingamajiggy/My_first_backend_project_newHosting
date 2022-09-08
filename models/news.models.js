@@ -7,6 +7,13 @@ exports.findingTopics = () => {
         })
 }
 
+exports.findingUsers = () => {
+    return db.query(`SELECT * FROM users;`)
+    .then((result) => {
+        return result.rows;
+    })
+}
+
 exports.findingArticles = (topicFilter) => {
     const queryArguments = []
 
