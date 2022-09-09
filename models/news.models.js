@@ -79,14 +79,12 @@ exports.postingComments = ({ body, author }, articleId) => {
         `INSERT INTO comments (
             body,
             author,
-            article_id,
-            votes
+            article_id
         ) VALUES (
             $1,
             $2,
-            $3,
-            0
-        );`, [body, author, articleId]
+            $3
+        ) RETURNING *;`, [body, author, articleId]
     )
         .then((result) => {
             return result.rows[0];

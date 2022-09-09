@@ -179,3 +179,47 @@ describe("GET /api/articles/:article_id/comments", () => {
             });
     });
 });
+
+describe("POST /api/articles/:article_id/comments", () => {
+
+    it("Should return the new articles obejct with the posted comment", () => {
+        return request(app)
+            .post("/api/articles/1/comments")
+            .expect(201)
+            .send({
+                body: "You are a wizard, Harry",
+                author: "butter_bridge"
+            })
+            .then((response) => {
+                expect(response.body.updateComment).toHaveProperty(
+                    "comment_id",
+                    expect.any(Number)
+                );
+                expect(response.body.updateComment).toHaveProperty(
+                    "body",
+                    expect.any(String)
+                );
+                expect(response.body.updateComment).toHaveProperty("article_id", expect.any(Number));
+                expect(response.body.updateComment).toHaveProperty("author", expect.any(String));
+                expect(response.body.updateComment).toHaveProperty(
+                    "votes",
+                    expect.any(Number)
+                );
+                expect(response.body.updateComment).toHaveProperty(
+                    "created_at",
+                    expect.any(String)
+                );
+            });
+    });
+
+    it("if the object doesn't have enough keys, expect error 400", () => {
+        return request(app)
+            .post("/api/articles/1/comments")
+            .expect(400)
+            .send({})
+            .then(({ status, body }) => {
+                expect(status).toBe(400);
+                expect(body.msg).toBe("Invalid input");
+            });
+    });
+})
