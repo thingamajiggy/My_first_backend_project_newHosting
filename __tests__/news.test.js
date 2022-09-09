@@ -44,7 +44,7 @@ describe("GET /api/articles/:article_id", () => {
             .get(`/api/articles/2`)
             .expect(200)
             .then(({ body }) => {
-                expect(body).toEqual({
+                expect(body.article).toEqual({
                     author: 'icellusedkars',
                     title: 'Sony Vaio; or, The Laptop',
                     article_id: 2,
@@ -126,6 +126,18 @@ describe("PATCH /api/articles/:article_id", () => {
                 expect(body.updatedArticle).toEqual(result);
             });
     });
+
+    it("returns error when the in_votes value is a string", () => {
+        return request(app)
+            .patch("/api/articles/2")
+            .expect(400)
+            .send({
+                inc_votes: 'i-am-a-string ',
+            })
+            .then(({ body }) => {
+                expect(body.msg).toBe("Invalid input");
+            });
+    });
 });
 
 describe("GET /api/articles", () => {
@@ -165,6 +177,24 @@ describe("GET /api/articles", () => {
                 expect(response.body.result.every((article) => article.topic === 'mitch')).toBe(true);
             });
     });
+
+    it("Should return an empty array of comments for the non-existing topic", () => {
+        return request(app)
+            .get("/api/articles?topic=paper")
+            .expect(200)
+            .then((response) => {
+                expect(response.body.result).toEqual([]);
+            });
+    });
+
+    it("Should return the intended error message", () => {
+        return request(app)
+            .get("/api/articles?topic=does-not-exist")
+            .expect(404)
+            .then(({ body }) => {
+                expect(body.msg).toBe("Page not found");
+            });
+    });
 });
 
 describe("GET /api/articles/:article_id/comments", () => {
@@ -176,6 +206,33 @@ describe("GET /api/articles/:article_id/comments", () => {
             .then((response) => {
                 expect(response.body.selectedComments.length === 0).toBe(false);
                 expect(response.body.selectedComments.every((comment) => comment.article_id === 5)).toBe(true);
+            });
+    });
+
+    it("Should return an empty array of comments for the non-existing article_id", () => {
+        return request(app)
+            .get("/api/articles/2/comments")
+            .expect(200)
+            .then((response) => {
+                expect(response.body.selectedComments).toEqual([]);
+            });
+    });
+
+    it("Should return the intended error message", () => {
+        return request(app)
+            .get("/api/articles/999999999/comments")
+            .expect(404)
+            .then(({ body }) => {
+                expect(body.msg).toBe("Page not found");
+            });
+    });
+
+    it("Should respond with an error message when passed a bad user ID", () => {
+        return request(app)
+            .get("/api/articles/not-an-id/comments")
+            .expect(400)
+            .then(({ body }) => {
+                expect(body.msg).toBe("Invalid input");
             });
     });
 });

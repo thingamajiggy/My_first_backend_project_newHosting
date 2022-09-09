@@ -9,9 +9,9 @@ exports.findingTopics = () => {
 
 exports.findingUsers = () => {
     return db.query(`SELECT * FROM users;`)
-    .then((result) => {
-        return result.rows;
-    })
+        .then((result) => {
+            return result.rows;
+        })
 }
 
 exports.findingArticles = (topicFilter) => {
@@ -21,10 +21,22 @@ exports.findingArticles = (topicFilter) => {
         queryArguments.push(topicFilter)
     }
 
-    return db.query(`SELECT * FROM articles ${topicFilter ? 'WHERE topic = $1' : ''} ORDER BY created_at DESC;`, queryArguments)
-        .then((result) => {
-            return result.rows;
-        })
+    return db.query(`SELECT * FROM topics ${topicFilter ? 'WHERE slug = $1' : ''} ;`, queryArguments)
+        .then(
+            function (topicResult) {
+
+                if (topicResult.rows.length === 0) {
+                    return Promise.reject({
+                        status: 404,
+                        msg: `Page not found`,
+                    });
+                }
+
+                return db.query(`SELECT * FROM articles ${topicFilter ? 'WHERE topic = $1' : ''} ORDER BY created_at DESC;`, queryArguments)
+                    .then((result) => {
+                        return result.rows;
+                    })
+            })
 }
 
 exports.findingArticleId = (articleId) => {
@@ -67,9 +79,44 @@ exports.patchingArticleId = (articleId, voteCount) => {
 
 exports.findingComments = (articleId) => {
 
-    return db.query(`SELECT * FROM comments WHERE article_id = $1;`, [articleId])
+    return db.query('SELECT * FROM articles WHERE article_id = $1', [articleId])
+
+        .then(
+            function (articleResult) {
+
+                if (articleResult.rows.length === 0) {
+                    return Promise.reject({
+                        status: 404,
+                        msg: `Page not found`,
+                    });
+                }
+
+                return db.query(`SELECT * FROM comments WHERE article_id = $1;`, [articleId])
+                    .then((result) => {
+                        return result.rows;
+                    });
+            });
+
+
+}
+
+exports.postingComments = ({ body, author }, articleId) => {
+
+    return db.query(
+        `INSERT INTO comments (
+            body,
+            author,
+            article_id,
+            votes
+        ) VALUES (
+            $1,
+            $2,
+            $3,
+            0
+        );`, [body, author, articleId]
+    )
         .then((result) => {
-            return result.rows;
+            return result.rows[0];
         })
 }
 

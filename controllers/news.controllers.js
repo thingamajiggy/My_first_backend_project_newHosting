@@ -1,21 +1,21 @@
-const { findingTopics, findingArticleId, findingUsers, patchingArticleId, findingArticles, findingComments } = require('../models/news.models.js')
+const { findingTopics, findingArticleId, findingUsers, patchingArticleId, findingArticles, findingComments, postingComments } = require('../models/news.models.js')
 
 exports.getTopics = (req, res, next) => {
     findingTopics().then((arrayOfTopics) => {
         res.status(200).send({ topics: arrayOfTopics })
     })
-    .catch((err) => {
-        next(err);
-    });
+        .catch((err) => {
+            next(err);
+        });
 }
 
 exports.getUsers = (req, res, next) => {
     findingUsers().then((arrayOfUsers) => {
         res.status(200).send({ arrayOfusers })
     })
-    .catch((err) => {
-        next(err);
-    })
+        .catch((err) => {
+            next(err);
+        })
 }
 
 exports.getArticles = (req, res, next) => {
@@ -33,7 +33,7 @@ exports.getArticleId = (req, res, next) => {
     const { article_id } = req.params
 
     findingArticleId(article_id).then((article) => {
-        res.status(200).send(article)
+        res.status(200).send({ article })
     })
         .catch((err) => {
             next(err);
@@ -58,6 +58,18 @@ exports.getComments = (req, res, next) => {
         .catch((err) => {
             next(err);
         });
+}
+
+exports.postComments = (req, res, next) => {
+    const { body } = req;
+    postingComments(body, req.params.article_id).then(
+        (updateComment) => {
+            res.status(201).send({ updateComment })
+        }
+    )
+        .catch((err) => {
+            next(err);
+        })
 }
 
 exports.getUsers = (req, res, next) => {
