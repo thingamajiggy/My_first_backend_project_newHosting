@@ -4,18 +4,18 @@ exports.getTopics = (req, res, next) => {
     findingTopics().then((arrayOfTopics) => {
         res.status(200).send({ topics: arrayOfTopics })
     })
-    .catch((err) => {
-        next(err);
-    });
+        .catch((err) => {
+            next(err);
+        });
 }
 
 exports.getUsers = (req, res, next) => {
     findingUsers().then((arrayOfUsers) => {
         res.status(200).send({ arrayOfusers })
     })
-    .catch((err) => {
-        next(err);
-    })
+        .catch((err) => {
+            next(err);
+        })
 }
 
 exports.getArticles = (req, res, next) => {
@@ -62,15 +62,15 @@ exports.getComments = (req, res, next) => {
 
 exports.postComments = (req, res, next) => {
     const { body } = req;
-    postingComments(body).then(
+    postingComments(body, req.params.article_id).then(
         (updateComment) => {
             res.status(201).send({ updateComment })
         }
     )
-    .catch((err) => {   
-        next(err);
-    })
-} 
+        .catch((err) => {
+            next(err);
+        })
+}
 
 exports.getUsers = (req, res, next) => {
     findingUsers().then((arrayOfUsers) => {

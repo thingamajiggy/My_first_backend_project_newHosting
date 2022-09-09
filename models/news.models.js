@@ -73,12 +73,20 @@ exports.findingComments = (articleId) => {
         })
 }
 
-exports.postingComments = (updateAuthor, updateBody) => {
-    const { body } = updateBody;
-    const { author } = updateAuthor;
+exports.postingComments = ({ body, author }, articleId) => {
 
     return db.query(
-        `UPDATE comments SET author = $1, body = $2 WHERE article_id = $3 RETURNING *;`, [author], [body]
+        `INSERT INTO comments (
+            body,
+            author,
+            article_id,
+            votes
+        ) VALUES (
+            $1,
+            $2,
+            $3,
+            0
+        );`, [body, author, articleId]
     )
         .then((result) => {
             return result.rows[0];
