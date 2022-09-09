@@ -126,6 +126,18 @@ describe("PATCH /api/articles/:article_id", () => {
                 expect(body.updatedArticle).toEqual(result);
             });
     });
+
+    it("returns error when the in_votes value is a string", () => {
+        return request(app)
+            .patch("/api/articles/2")
+            .expect(400)
+            .send({
+                inc_votes: 'i-am-a-string ',
+            })
+            .then(({ body }) => {
+                expect(body.msg).toBe("Invalid input");
+            });
+    });
 });
 
 describe("GET /api/articles", () => {
