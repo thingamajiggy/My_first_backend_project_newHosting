@@ -9,9 +9,9 @@ exports.findingTopics = () => {
 
 exports.findingUsers = () => {
     return db.query(`SELECT * FROM users;`)
-    .then((result) => {
-        return result.rows;
-    })
+        .then((result) => {
+            return result.rows;
+        })
 }
 
 exports.findingArticles = (topicFilter) => {
@@ -70,6 +70,18 @@ exports.findingComments = (articleId) => {
     return db.query(`SELECT * FROM comments WHERE article_id = $1;`, [articleId])
         .then((result) => {
             return result.rows;
+        })
+}
+
+exports.postingComments = (updateAuthor, updateBody) => {
+    const { body } = updateBody;
+    const { author } = updateAuthor;
+
+    return db.query(
+        `UPDATE comments SET author = $1, body = $2 WHERE article_id = $3 RETURNING *;`, [author], [body]
+    )
+        .then((result) => {
+            return result.rows[0];
         })
 }
 

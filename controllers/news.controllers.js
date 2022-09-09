@@ -1,4 +1,4 @@
-const { findingTopics, findingArticleId, findingUsers, patchingArticleId, findingArticles, findingComments } = require('../models/news.models.js')
+const { findingTopics, findingArticleId, findingUsers, patchingArticleId, findingArticles, findingComments, postingComments } = require('../models/news.models.js')
 
 exports.getTopics = (req, res, next) => {
     findingTopics().then((arrayOfTopics) => {
@@ -59,6 +59,18 @@ exports.getComments = (req, res, next) => {
             next(err);
         });
 }
+
+exports.postComments = (req, res, next) => {
+    const { body } = req;
+    postingComments(body).then(
+        (updateComment) => {
+            res.status(201).send({ updateComment })
+        }
+    )
+    .catch((err) => {   
+        next(err);
+    })
+} 
 
 exports.getUsers = (req, res, next) => {
     findingUsers().then((arrayOfUsers) => {
