@@ -39,6 +39,11 @@ So if you npm install on this repository, you would get those 4 packages above.
 
 ## Minimum version of Node.js and Postgres?
 
+```
+node v18.12.0
+postgres 13.8
+
+```
 
 ## What is .ENV file?
 
@@ -58,8 +63,13 @@ DATABASE_URL=<postgres://[user]:[password]@[host]:[port]/[database]>
 
 ## About the seed data?
 
+In the very beginning, there is no data in our database. That is why we sometimes make dummy data which is called seed data and seed it our repository. You can see seed datas on 'db > data'. That makes it easier to make endpoints and check endpoints to work well. To insert those seed datas into our postgres database, you can type 'npm run seed' in your terminal. 
 
-## How to run the app?
+```
+npm run seed
+```
+
+# How to run the app?
 
 First, connect a database to the postgres server on your computer.
 In the terminal, write down 'psql' then check if the database is well connected and located in your psql databse. To see if the database you connected is on your postgres server, run the command 
@@ -76,9 +86,9 @@ If you found your database then you can connect it to the postgres server. (You 
 If it is successfully connected, you can finally run the app without being crashed. 
 
 ```
-npm run dev
+npm run dev or npm run start
 ```
-In the terminal, you could see 'port is listening'. That means, your app successfully runs.
+In the terminal, you could see 'Listening on 9090(port number)'. That means, your app successfully runs.
 
 From that moment, you can write your endpoint using database!
 

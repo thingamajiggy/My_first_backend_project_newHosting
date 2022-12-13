@@ -17,6 +17,12 @@ const config =
           rejectUnauthorized: false,
         },
       }
-    : {};
+    : {
+      
+        user: process.env.POSTGRES_USER,
+        password: process.env.POSTGRES_PASSWORD,
+        database: process.env.PGDATABASE,
+    
+    };
 
 module.exports = new Pool(config);
