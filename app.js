@@ -1,10 +1,10 @@
-const express = require('express');
-const cors = require('cors');
-app.use(cors());
-
 const { getTopics, getArticleId, getUsers, patchArticleId, getArticles, getComments, postComments, code404NotFound } = require('./controllers/news.controllers.js')
 
+const express = require('express');
 const app = express();
+const cors = require('cors');
+
+app.use(cors());
 
 app.use(express.json());
 
