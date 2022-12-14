@@ -1,12 +1,12 @@
 const express = require('express');
+const cors = require('cors');
+app.use(cors());
+
 const { getTopics, getArticleId, getUsers, patchArticleId, getArticles, getComments, postComments, code404NotFound } = require('./controllers/news.controllers.js')
 
 const app = express();
 
 app.use(express.json());
-
-const cors = require('cors');
-app.use(cors());
 
 app.get("/api/topics", getTopics);
 app.get("/api/users", getUsers);
