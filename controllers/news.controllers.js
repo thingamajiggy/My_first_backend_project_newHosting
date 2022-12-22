@@ -1,4 +1,4 @@
-const { findingTopics, findingArticleId, findingUsers, patchingArticleId, findingArticles, findingComments, postingComments } = require('../models/news.models.js')
+const { findingTopics, findingArticleId, findingUsers, patchingArticleId, findingArticles, findingComments, postingComments, searchArticles } = require('../models/news.models.js')
 
 exports.getTopics = (req, res, next) => {
     findingTopics().then((arrayOfTopics) => {
@@ -19,14 +19,21 @@ exports.getUsers = (req, res, next) => {
 }
 
 exports.getArticles = (req, res, next) => {
-    const { topic } = req.query;
 
-    findingArticles(topic).then((result) => {
+    findingArticles(req.query).then((result) => {
         res.status(200).send({ result })
     })
         .catch((err) => {
             next(err);
         });
+}
+
+exports.searchArticles = (req, res, next) => {
+    searchArticles(req.params.searchTerm).then((articles) => {
+        res.status(200).send({ articles })
+    }).catch((err) => {
+        next(err)
+    })
 }
 
 exports.getArticleId = (req, res, next) => {

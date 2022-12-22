@@ -10,7 +10,7 @@ This is my first backend project for backing up the news website. With the APIs 
 If you don't use a password-protected SSH key, clone HTTPS version of URL. 
 HTTPS URL = https://github.com/thingamajiggy/My_first_backend_project_newHosting.git
 
-If you want to have your own SSH key, check this out : https://github.com/thingamajiggy/My_first_backend_project_newHosting.git
+If you want to have your own SSH key, check this out : https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent
 
 SSH URL = git@github.com:thingamajiggy/My_first_backend_project_newHosting.git
 

@@ -14,17 +14,16 @@ exports.findingUsers = () => {
         })
 }
 
-exports.findingArticles = (topicFilter) => {
-    const queryArguments = []
+exports.findingArticles = ({topic: topicFilter, author: authorFilter, sort = 'Date'}) => {
+    const topicQueryArguments = []
 
     if (topicFilter) {
-        queryArguments.push(topicFilter)
+        topicQueryArguments.push(topicFilter)
     }
 
-    return db.query(`SELECT * FROM topics ${topicFilter ? 'WHERE slug = $1' : ''} ;`, queryArguments)
+    return db.query(`SELECT * FROM topics ${topicFilter ? 'WHERE slug = $1' : ''} ;`, topicQueryArguments)
         .then(
             function (topicResult) {
-
                 if (topicResult.rows.length === 0) {
                     return Promise.reject({
                         status: 404,
@@ -32,11 +31,42 @@ exports.findingArticles = (topicFilter) => {
                     });
                 }
 
-                return db.query(`SELECT * FROM articles ${topicFilter ? 'WHERE topic = $1' : ''} ORDER BY created_at DESC;`, queryArguments)
+                const queryArguments = [];
+                let whereClause = ''
+                let orderBy = ''
+
+                if (topicFilter && authorFilter) {
+                    queryArguments.push(topicFilter, authorFilter)
+                    whereClause = 'WHERE topic = $1 AND author = $2'
+                } else if (topicFilter) {
+                    queryArguments.push(topicFilter)
+                    whereClause = 'WHERE topic = $1'
+                } else if (authorFilter) {
+                    queryArguments.push(authorFilter)
+                    whereClause = 'WHERE author = $1'
+                }
+
+                if (sort === 'Date' || !sort) {
+                    orderBy = 'created_at';
+                    direction = 'DESC';
+                } else if (sort === 'Alphabetical') {
+                    orderBy = 'title';
+                    direction = 'ASC';
+                }
+
+                return db.query(`SELECT * FROM articles ${whereClause ? whereClause : ''} ORDER BY ${orderBy} ${direction};`, queryArguments)
                     .then((result) => {
                         return result.rows;
                     })
             })
+}
+
+exports.searchArticles = (searchTerm = "") => {
+    return db.query(`
+        SELECT * FROM articles WHERE title ILIKE $1
+    `, [`%${searchTerm.trim()}%`]).then(({ rows }) => {
+        return rows;
+    })
 }
 
 exports.findingArticleId = (articleId) => {
